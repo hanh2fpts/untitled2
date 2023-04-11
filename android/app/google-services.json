@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "149178571067",
+    "project_id": "otp-code-demo-19b1c",
+    "storage_bucket": "otp-code-demo-19b1c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149178571067:android:e5ef0e950b1b83c46a3f1e",
+        "android_client_info": {
+          "package_name": "com.example.untitled2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149178571067-mcqq9phum3h7recil6ivptvnhdqqh1gl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKL6s-PBhi05PoDi4NhFaM5uiryFE79Lg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149178571067-mcqq9phum3h7recil6ivptvnhdqqh1gl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
