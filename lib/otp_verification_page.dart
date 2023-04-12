@@ -1,16 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pinput/pinput.dart';
-import 'package:untitled2/main.dart';
+import 'package:untitled2/bloc/login_bloc.dart';
 import 'package:untitled2/overview.dart';
 
 class OtpVerificationPage extends StatefulWidget {
-  const OtpVerificationPage(
-      {Key? key, required this.verificationId, required this.phoneNumber})
-      : super(key: key);
-  final String verificationId;
-  final String phoneNumber;
+  const OtpVerificationPage({Key? key}) : super(key: key);
 
   @override
   State<OtpVerificationPage> createState() => _OtpVerificationPageState();
@@ -20,10 +16,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
   static final defaultPinTheme = PinTheme(
     width: 56,
     height: 56,
-    textStyle: const TextStyle(
-        fontSize: 20,
-        color: Color.fromRGBO(30, 60, 87, 1),
-        fontWeight: FontWeight.w600),
+    textStyle: const TextStyle(fontSize: 20, color: Color.fromRGBO(30, 60, 87, 1), fontWeight: FontWeight.w600),
     decoration: BoxDecoration(
       border: Border.all(color: Colors.black26),
       borderRadius: BorderRadius.circular(15),
@@ -46,58 +39,59 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
       color: Colors.red,
     ),
   );
-  TextEditingController otpController = TextEditingController();
-
-  verifyOtp() async {
-    try {
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: widget.verificationId, smsCode: otpController.text);
-      await auth.signInWithCredential(credential).then((value) {
-        otpController.setText(credential.smsCode.toString());
-        if (value.user != null) {
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const Overview()));
-        }
-      });
-    } catch (e) {}
+  @override
+  void dispose() {
+    super.dispose();
+    //context.read<LoginBloc>().pinController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Lottie.asset('assets/images/message.json', height: 200),
-            const Text('Enter Code',
-                style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 50),
-              child: Text(
-                  "We've sent the OTP to your number +84 ${widget.phoneNumber}",
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                  textAlign: TextAlign.center),
-            ),
-            const SizedBox(height: 40),
-            Pinput(
-              androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
-              defaultPinTheme: defaultPinTheme,
-              focusedPinTheme: focusedPinTheme,
-              submittedPinTheme: submittedPinTheme,
-              isCursorAnimationEnabled:  true,
-              onCompleted: (value) {
-                verifyOtp();
-              },
-              length: 6,
-              showCursor: true,
-              autofocus: true,
-              controller: otpController,
-            )
-          ],
+    return BlocProvider(
+      create: (context) => LoginBloc(),
+      child: BlocListener<LoginBloc, LoginState>(
+        listener: (context, state) {
+          if (state is VerifyOtpSuccess) {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Overview()));
+          }
+        },
+        child: BlocBuilder<LoginBloc, LoginState>(
+          builder: (context, state) {
+            return Scaffold(
+              body: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset('assets/images/message.json', height: 200),
+                    const Text('Enter Code', style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: Text("We've sent the OTP to your number +84 ${context.read<LoginBloc>().phoneNumber}",
+                          style: const TextStyle(fontSize: 16, color: Colors.black), textAlign: TextAlign.center),
+                    ),
+                    const SizedBox(height: 40),
+                    Pinput(
+                      androidSmsAutofillMethod: AndroidSmsAutofillMethod.none,
+                      defaultPinTheme: defaultPinTheme,
+                      focusedPinTheme: focusedPinTheme,
+                      submittedPinTheme: submittedPinTheme,
+                      isCursorAnimationEnabled: true,
+                      onCompleted: (value) {
+                        context.read<LoginBloc>().add(VerifyOtpEvent());
+                      },
+                      length: 6,
+                      showCursor: true,
+                      autofocus: true,
+                      controller: context.read<LoginBloc>().pinController,
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );

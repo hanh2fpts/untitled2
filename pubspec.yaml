@@ -40,6 +40,9 @@ dependencies:
   lottie: ^2.3.2
   pinput: ^2.2.31
   mockito: ^5.4.0
+  flutter_bloc: ^8.1.2
+  firebase_app_check: ^0.1.2
+  
 
 dev_dependencies:
   flutter_test:

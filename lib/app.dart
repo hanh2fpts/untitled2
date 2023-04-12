@@ -29,10 +29,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     //print('${auth.currentUser?.uid}');
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: auth.currentUser?.phoneNumber == '+84327995213'
-            ? const Overview()
-            : const Login());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: auth.currentUser?.phoneNumber == '+84327995213' ? const Overview() : const Login());
   }
 }
