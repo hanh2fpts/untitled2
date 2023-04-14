@@ -5,6 +5,7 @@ import 'package:pinput/pinput.dart';
 import 'package:untitled2/main.dart';
 
 part 'login_event.dart';
+
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
@@ -13,11 +14,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   String phoneNumber = '';
   bool isComplete = false;
   TextEditingController pinController = TextEditingController();
+
   LoginBloc() : super(LoginInitial()) {
     on<LoginEvent>((event, emit) {});
     on<SendOtpEvent>(sendOtp);
     on<VerifyOtpEvent>(verifyOtp);
   }
+
   void sendOtp(SendOtpEvent event, Emitter<LoginState> emit) async {
     var phone = event.phoneNumber;
     phoneNumber = phone.startsWith('0') ? phone.substring(1) : phone;
@@ -47,7 +50,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       print('gia tri khi truyen vao :$verificationId');
       print(pinController.text);
-      PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: pinController.text);
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: verificationId, smsCode: pinController.text);
       await auth.signInWithCredential(credential).then((value) {
         if (value.user != null) {
           emit(VerifyOtpSuccess());
